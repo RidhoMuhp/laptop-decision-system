@@ -35,6 +35,9 @@ rules = {
 }
 
 def evaluate_laptops(name, laptop, user):
+    if laptop["ram"] < user["min_ram"]:
+        return None
+    
     score  = 0
     reasons = []
     
@@ -56,14 +59,21 @@ def evaluate_laptops(name, laptop, user):
     
 results = []
 
+results = []
+
 for name, laptop in laptops.items():
     result = evaluate_laptops(name, laptop, user_need)
-    results.append(result)
+    if result:
+        results.append(result)
 
-results.sort(key=lambda x: x["score"], reverse=True)
+if results:
+    best = max(results, key=lambda x: x["score"])
 
-for r in results:
-    print(f"Model: {r['name']}, Skor: {r['score']}")
-    for reason in r["reasons"]:
-        print(f" - {reason}")
-    print()
+    print("💻 Rekomendasi Laptop Terbaik")
+    print(f"Model : {best['name']}")
+    print(f"Skor  : {best['score']}")
+    print("Alasan:")
+    for reason in best["reasons"]:
+        print(f"- {reason}")
+else:
+    print("❌ Tidak ada laptop yang memenuhi kebutuhan minimum.")
